@@ -81,6 +81,7 @@ dataset/PotatoSorter
 ppdet/version.py
 *.pdopt
 *.pdparams
+*.jpg
 # NPU meta folder
 kernel_meta/
 

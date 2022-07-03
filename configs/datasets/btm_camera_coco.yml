@@ -1,0 +1,19 @@
+metric: COCO
+num_classes: 6
+
+TrainDataset:
+  !COCODataSet
+    image_dir: train
+    anno_path: annotations/instance_train.json
+    dataset_dir: dataset/BtmCamera
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'gt_poly', 'is_crowd']
+
+EvalDataset:
+  !COCODataSet
+    image_dir: val
+    anno_path: annotations/instance_val.json
+    dataset_dir: dataset/BtmCamera
+
+TestDataset:
+  !ImageFolder
+    anno_path: /home/lifei/PaddleDetection/dataset/BtmCamera/annotations/instance_val.json

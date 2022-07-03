@@ -1,0 +1,1 @@
+visualdl --logdir configs/solov2/potato_sorter/vdl_dir/scalar port 9523

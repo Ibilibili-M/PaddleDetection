@@ -709,6 +709,111 @@ class RandomFlip(BaseOperator):
         return sample
 
 
+class RandomFlipUd(BaseOperator):
+    def __init__(self, prob=0.5):
+        """
+        Args:
+            prob (float): the probability of flipping image
+        """
+        super(RandomFlip, self).__init__()
+        self.prob = prob
+        if not (isinstance(self.prob, float)):
+            raise TypeError("{}: input type is invalid.".format(self))
+
+    def apply_segm(self, segms, height, width):
+        def _flip_poly(poly, height):
+            flipped_poly = np.array(poly)
+            flipped_poly[1::2] = height - np.array(poly[1::2])
+            return flipped_poly.tolist()
+
+        def _flip_rle(rle, height, width):
+            if 'counts' in rle and type(rle['counts']) == list:
+                rle = mask_util.frPyObjects(rle, height, width)
+            mask = mask_util.decode(rle)
+            mask = mask[::-1, :]
+            rle = mask_util.encode(np.array(mask, order='F', dtype=np.uint8))
+            return rle
+
+        flipped_segms = []
+        for segm in segms:
+            if is_poly(segm):
+                # Polygon format
+                flipped_segms.append([_flip_poly(poly, height) for poly in segm])
+            else:
+                # RLE format
+                import pycocotools.mask as mask_util
+                flipped_segms.append(_flip_rle(segm, height, width))
+        return flipped_segms
+
+    def apply_keypoint(self, gt_keypoint, height):
+        for i in range(gt_keypoint.shape[1]):
+            if i % 2 == 1:
+                old_y = gt_keypoint[:, i].copy()
+                gt_keypoint[:, i] = height - old_y
+        return gt_keypoint
+
+    def apply_image(self, image):
+        return image[::-1, :, :]
+
+    def apply_bbox(self, bbox, height):
+        oldx1 = bbox[:, 1].copy()
+        oldx2 = bbox[:, 3].copy()
+        bbox[:, 1] = height - oldx2
+        bbox[:, 3] = height - oldx1
+        return bbox
+
+    def apply_rbox(self, bbox, height):
+        oldx1 = bbox[:, 1].copy()
+        oldx2 = bbox[:, 3].copy()
+        oldx3 = bbox[:, 5].copy()
+        oldx4 = bbox[:, 7].copy()
+        bbox[:, 1] = height - oldx1
+        bbox[:, 3] = height - oldx2
+        bbox[:, 5] = height - oldx3
+        bbox[:, 7] = height - oldx4
+        bbox = [bbox_utils.get_best_begin_point_single(e) for e in bbox]
+        return bbox
+
+    def apply(self, sample, context=None):
+        """Filp the image and bounding box.
+        Operators:
+            1. Flip the image numpy.
+            2. Transform the bboxes' x coordinates.
+              (Must judge whether the coordinates are normalized!)
+            3. Transform the segmentations' x coordinates.
+              (Must judge whether the coordinates are normalized!)
+        Output:
+            sample: the image, bounding box and segmentation part
+                    in sample are flipped.
+        """
+        if np.random.uniform(0, 1) < self.prob:
+            im = sample['image']
+            height, width = im.shape[:2]
+            im = self.apply_image(im)
+            if 'gt_bbox' in sample and len(sample['gt_bbox']) > 0:
+                sample['gt_bbox'] = self.apply_bbox(sample['gt_bbox'], height)
+            if 'gt_poly' in sample and len(sample['gt_poly']) > 0:
+                sample['gt_poly'] = self.apply_segm(sample['gt_poly'], height,
+                                                    width)
+            if 'gt_keypoint' in sample and len(sample['gt_keypoint']) > 0:
+                sample['gt_keypoint'] = self.apply_keypoint(
+                    sample['gt_keypoint'], height)
+
+            if 'semantic' in sample and sample['semantic']:
+                sample['semantic'] = sample['semantic'][::-1, :]
+
+            if 'gt_segm' in sample and sample['gt_segm'].any():
+                sample['gt_segm'] = sample['gt_segm'][:, ::-1, :]
+
+            if 'gt_rbox2poly' in sample and sample['gt_rbox2poly'].any():
+                sample['gt_rbox2poly'] = self.apply_rbox(sample['gt_rbox2poly'],
+                                                         height)
+
+            sample['flipped'] = True
+            sample['image'] = im
+        return sample
+
+
 @register_op
 class Resize(BaseOperator):
     def __init__(self, target_size, keep_ratio, interp=cv2.INTER_LINEAR):

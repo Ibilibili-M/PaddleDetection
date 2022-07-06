@@ -81,7 +81,9 @@ dataset/PotatoSorter
 ppdet/version.py
 *.pdopt
 *.pdparams
+*.pdema
 *.jpg
+configs/solov2/potato_sorter/export
 # NPU meta folder
 kernel_meta/
 

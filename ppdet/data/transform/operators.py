@@ -715,7 +715,7 @@ class RandomFlipUd(BaseOperator):
         Args:
             prob (float): the probability of flipping image
         """
-        super(RandomFlip, self).__init__()
+        super(RandomFlipUd, self).__init__()
         self.prob = prob
         if not (isinstance(self.prob, float)):
             raise TypeError("{}: input type is invalid.".format(self))

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 CONFIG_ROOT="configs/solov2/potato_sorter"
-CONFIG_NAME="solov2_r50_fpn_3x_sorter_lr0001_bs16_aughsv"
+CONFIG_NAME="solov2_r50_fpn_3x_sorter_lr0005_bs16_1120_aughsv_flipud"
 CONFIG_FILE="${CONFIG_ROOT}/${CONFIG_NAME}.yml"
 VDL_LOG_DIR="${CONFIG_ROOT}/vdl_dir/scalar/${CONFIG_NAME}"
 DEVICES="0"
@@ -9,7 +9,7 @@ TRAIN_OUTPUT="${CONFIG_ROOT}/train"
 EXPORT_DIR="${CONFIG_ROOT}/export"
 WEIGHTS="${TRAIN_OUTPUT}/${CONFIG_NAME}/best_model"
 EVAL_OUTPUT="${CONFIG_ROOT}/eval"
-PRETRAIN_WEIGHTS=
+# PRETRAIN_WEIGHTS=
 
 # 模型训练(GPU单卡训练/GPU多卡训练)
 if [ ${#DEVICES} -gt 2 ]
@@ -34,7 +34,7 @@ else
 fi
 
 # 模型评估
-export CUDA_VISIBLE_DEVICES=0 #windows和Mac下不需要执行该命令
+export CUDA_VISIBLE_DEVICES=${DEVICES:0:1} #windows和Mac下不需要执行该命令
 python tools/eval.py \
 -c ${CONFIG_FILE} \
 -o weights="${TRAIN_OUTPUT}/${CONFIG_NAME}/best_model.pdparams" \

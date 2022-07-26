@@ -1,6 +1,6 @@
 set -e
 
-input_dir="/mnt/disk/lifei/potato/xxx"
+input_dir="/mnt/disk/lifei/potato_sorter_0715"
 # 图片和标签四合一
 python four2one.py \
 --data_dir ${input_dir} \

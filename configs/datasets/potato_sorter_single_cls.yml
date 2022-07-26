@@ -1,0 +1,19 @@
+metric: COCO
+num_classes: 2
+
+TrainDataset:
+  !COCODataSet
+    image_dir: train
+    anno_path: /home/lifei/PaddleDetection/dataset/PotatoSorterSingle/annotations/instance_train.json
+    dataset_dir: /home/lifei/PaddleDetection/dataset/PotatoSorterSingle
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'gt_poly', 'is_crowd']
+
+EvalDataset:
+  !COCODataSet
+    image_dir: val
+    anno_path: /home/lifei/PaddleDetection/dataset/PotatoSorterSingle/annotations/instance_val.json
+    dataset_dir: /home/lifei/PaddleDetection/dataset/PotatoSorterSingle
+
+TestDataset:
+  !ImageFolder
+    anno_path: /home/lifei/PaddleDetection/dataset/PotatoSorterSingle/annotations/instance_val.json

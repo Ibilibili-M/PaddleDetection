@@ -78,11 +78,16 @@ dataset/wider_face/WIDER_train
 dataset/wider_face/WIDER_val
 dataset/wider_face/wider_face_split
 dataset/PotatoSorter
+dataset/PotatoSorterSingle
 ppdet/version.py
 *.pdopt
 *.pdparams
 *.pdema
 *.jpg
+*.pdiparams
+*.pdiparams.info
+infer_cfg.yml
+*.pdmodel
 configs/solov2/potato_sorter/export
 # NPU meta folder
 kernel_meta/

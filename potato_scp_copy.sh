@@ -1,0 +1,1 @@
+scp lifei@172.16.2.176:/mnt/disk/lifei/potato_sorter_0715_coco lifei@172.16.2.49:/mnt/disk/lifei/potato_sorter_0715_coco

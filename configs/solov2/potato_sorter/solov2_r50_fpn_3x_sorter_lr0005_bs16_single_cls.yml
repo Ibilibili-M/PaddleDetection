@@ -1,12 +1,12 @@
 _BASE_: [
-  '../../datasets/potato_sorter.yml',
+  '../../datasets/potato_sorter_single_cls.yml',
   '../../runtime.yml',
   '../_base_/solov2_r50_fpn.yml',
   '../_base_/optimizer_1x.yml',
   '../_base_/solov2_reader.yml',
 ]
 weights: output/solov2_r50_fpn_3x_coco/model_final
-epoch: 500
+epoch: 300
 
 LearningRate:
   base_lr: 0.005
@@ -22,13 +22,11 @@ worker_num: 16
 TrainReader:
   sample_transforms:
   - Decode: {}
-  - AugmentHSV: {fraction: 0.2, is_bgr: false}
   - Poly2Mask: {}
   - RandomResize: {interp: 1,
                      target_size: [[672, 832], [704, 896], [736, 928], [608, 768], [576, 704], [544, 672], [640, 800]],
                      keep_ratio: True}
   - RandomFlip: {}
-  - RandomFlipUd: {}
   - NormalizeImage: {is_scale: true, mean: [0.485,0.456,0.406], std: [0.229, 0.224,0.225]}
   - Permute: {}
   batch_transforms:

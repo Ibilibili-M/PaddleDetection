@@ -80,6 +80,8 @@ dataset/wider_face/wider_face_split
 dataset/PotatoSorter
 dataset/PotatoSorterSingle
 dataset/PotatoSorterOne
+dataset/BtmCamera
+dataset/TopCamera
 ppdet/version.py
 *.pdopt
 *.pdparams

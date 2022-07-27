@@ -4,15 +4,15 @@ num_classes: 7
 TrainDataset:
   !COCODataSet
     image_dir: train
-    anno_path: annotations/instance_train.json
-    dataset_dir: dataset/TopCamera
+    anno_path: /home/lifei/PaddleDetection/dataset/TopCamera/annotations/instance_train.json
+    dataset_dir: /home/lifei/PaddleDetection/dataset/TopCamera
     data_fields: ['image', 'gt_bbox', 'gt_class', 'gt_poly', 'is_crowd']
 
 EvalDataset:
   !COCODataSet
     image_dir: val
-    anno_path: annotations/instance_val.json
-    dataset_dir: dataset/TopCamera
+    anno_path: /home/lifei/PaddleDetection/dataset/TopCamera/annotations/instance_val.json
+    dataset_dir: /home/lifei/PaddleDetection/dataset/TopCamera
 
 TestDataset:
   !ImageFolder

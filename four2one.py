@@ -182,7 +182,8 @@ def main(configs):
                 elif f.endswith('.bmp'):
                     shutil.copy2(file_path, image_dir)
                 else:
-                    raise TypeError(f"不支持的文件格式{os.path.splitext(f)[1]}")
+                    logger.info(f"不支持的文件格式{os.path.splitext(f)[1]}")
+                    continue
                 count += 1
         logger.info(f"处理完{count}个文件.")
 

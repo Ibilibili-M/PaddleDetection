@@ -113,6 +113,7 @@ def get_params():
     parser.add_argument('--shuffle', action='store_true', default=False, help='拼接前打乱顺序')
     parser.add_argument('--shuffle_num', type=int, default=1, metavar="SHUFFLE_NUM", help='图片和标签文件打乱次数')
     parser.add_argument('--split', action='store_true', default=False, help='将图片和json文件分开')
+    parser.add_argument('--split_only', action='store_true', default=False, help='只执行图片和json文件分开')
     args = parser.parse_args()
     return args
 
@@ -121,47 +122,69 @@ def main(configs):
 
     logger.info(f"configs: (data_dir, {configs.data_dir}), (shuffle, {configs.shuffle}), "
                 f"(shuffle_num, {configs.shuffle_num}), (split, {configs.split})")
-    json_files = []
-    for root, dirs, files in os.walk(configs.data_dir):
-        for file in files:
-            if file.endswith('.json'):
-                json_files.append(os.path.join(root, file))
+    if not configs.split_only:
+        json_files = []
+        for root, dirs, files in os.walk(configs.data_dir):
+            for file in files:
+                if file.endswith('.json'):
+                    json_files.append(os.path.join(root, file))
 
-    target_dir = os.path.join(os.path.dirname(configs.data_dir),
-                              os.path.basename(configs.data_dir) + "_joint")
-    logger.info(f"target_dir: {target_dir}")
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
-    # 打乱顺序
-    for seed in range(configs.shuffle_num):
-        if configs.shuffle:
-            random.seed(seed)
-            random.shuffle(json_files)
-        # 图像分组
-        json_group, image_group = group(json_files, group_size=4)
-        # 读取4张图片，裁剪图片，拼接图片，修改json
-        convert(json_group, image_group, seed, target_size=(1024, 1280), target_dir=target_dir)
+        target_dir = os.path.join(os.path.dirname(configs.data_dir),
+                                  os.path.basename(configs.data_dir) + "_joint")
+        logger.info(f"target_dir: {target_dir}")
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+        # 打乱顺序
+        for seed in range(configs.shuffle_num):
+            if configs.shuffle:
+                random.seed(seed)
+                random.shuffle(json_files)
+            # 图像分组
+            json_group, image_group = group(json_files, group_size=4)
+            # 读取4张图片，裁剪图片，拼接图片，修改json
+            convert(json_group, image_group, seed, target_size=(1024, 1280), target_dir=target_dir)
 
-    # 将图片和json文件放到不同目录
-    if configs.split:
-        save_dir = target_dir + "_split"
+        # 将图片和json文件放到不同目录
+        if configs.split:
+            save_dir = target_dir + "_split"
+            image_dir = os.path.join(save_dir, 'labelme_imgs')
+            json_dir = os.path.join(save_dir, 'labelme_annos')
+            if not os.path.exists(image_dir):
+                os.makedirs(image_dir)
+            if not os.path.exists(json_dir):
+                os.makedirs(json_dir)
+
+            for root, dirs, files in os.walk(target_dir):
+                for f in files:
+                    file_path = os.path.join(root, f)
+                    if f.endswith('.json'):
+                        shutil.move(file_path, json_dir)
+                    elif f.endswith('.bmp'):
+                        shutil.move(file_path, image_dir)
+                    else:
+                        raise TypeError(f"不支持的文件格式{os.path.splitext(f)[1]}")
+            os.rmdir(target_dir)
+    else:
+        # 只分离
+        save_dir = configs.data_dir + "_split"
         image_dir = os.path.join(save_dir, 'labelme_imgs')
         json_dir = os.path.join(save_dir, 'labelme_annos')
         if not os.path.exists(image_dir):
             os.makedirs(image_dir)
         if not os.path.exists(json_dir):
             os.makedirs(json_dir)
-
-        for root, dirs, files in os.walk(target_dir):
+        count = 0
+        for root, dirs, files in os.walk(configs.data_dir):
             for f in files:
                 file_path = os.path.join(root, f)
                 if f.endswith('.json'):
-                    shutil.move(file_path, json_dir)
+                    shutil.copy2(file_path, json_dir)
                 elif f.endswith('.bmp'):
-                    shutil.move(file_path, image_dir)
+                    shutil.copy2(file_path, image_dir)
                 else:
-                    raise TypeError(f"不支持的文件格式{os.path.splitext(file)[1]}")
-        os.rmdir(target_dir)
+                    raise TypeError(f"不支持的文件格式{os.path.splitext(f)[1]}")
+                count += 1
+        logger.info(f"处理完{count}个文件.")
 
 
 if __name__ == '__main__':

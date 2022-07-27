@@ -79,6 +79,7 @@ dataset/wider_face/WIDER_val
 dataset/wider_face/wider_face_split
 dataset/PotatoSorter
 dataset/PotatoSorterSingle
+dataset/PotatoSorterOne
 ppdet/version.py
 *.pdopt
 *.pdparams

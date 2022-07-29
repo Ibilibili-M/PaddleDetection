@@ -32,7 +32,7 @@ TrainReader:
   - Gt2Solov2Target: {num_grids: [40, 36, 24, 16, 12],
                         scale_ranges: [[1, 96], [48, 192], [96, 384], [192, 768], [384, 2048]],
                         coord_sigma: 0.2}
-  batch_size: 2
+  batch_size: 16
   shuffle: true
   drop_last: true
 

@@ -3,8 +3,8 @@ set -e
 DATA_VERSION="data-0715-single"
 DEVICES="1"
 # PRETRAIN_WEIGHTS_PATH='configs/solov2/potato_sorter/data-0602/train/solov2_r50_fpn_3x_sorter_lr0005_bs16_1120_aughsv_flipud/best_model'
-PRETRAIN_WEIGHTS_PATH=''
-CONFIG_NAME="solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls"
+PRETRAIN_WEIGHTS_PATH='configs/solov2/potato_sorter/data-0715-single/train/solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls/best_model'
+CONFIG_NAME="solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls_pretrain"
 
 CONFIG_ROOT="configs/solov2/potato_sorter"
 CONFIG_FILE="${CONFIG_ROOT}/${CONFIG_NAME}.yml"

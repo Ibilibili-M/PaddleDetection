@@ -51,9 +51,7 @@ TrainReader:
   sample_transforms:
   - Decode: {}
   - Poly2Mask: {}
-  - RandomResize: {interp: 1,
-                     target_size: [[576, 896], [544, 864], [512, 832], [480, 736], [448, 704], [416, 672], [480, 768]],
-                     keep_ratio: True}
+  - Resize: {interp: 1, target_size: [480, 768], keep_ratio: True}
   - RandomFlip: {}
   - NormalizeImage: {is_scale: true, mean: [0.485,0.456,0.406], std: [0.229, 0.224,0.225]}
   - Permute: {}

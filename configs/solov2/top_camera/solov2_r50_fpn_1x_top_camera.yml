@@ -6,8 +6,19 @@ _BASE_: [
   '../_base_/solov2_reader.yml',
 ]
 weights: output/solov2_r50_fpn_1x_coco/model_final
+epoch: 300
 
-worker_num: 16
+LearningRate:
+  base_lr: 0.01
+  schedulers:
+  - !PiecewiseDecay
+    gamma: 0.1
+    milestones: [24, 33]
+  - !LinearWarmup
+    start_factor: 0.
+    steps: 1000
+
+worker_num: 8
 TrainReader:
   sample_transforms:
   - Decode: {}
@@ -21,7 +32,7 @@ TrainReader:
   - Gt2Solov2Target: {num_grids: [40, 36, 24, 16, 12],
                         scale_ranges: [[1, 96], [48, 192], [96, 384], [192, 768], [384, 2048]],
                         coord_sigma: 0.2}
-  batch_size: 2
+  batch_size: 16
   shuffle: true
   drop_last: true
 

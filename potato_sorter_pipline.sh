@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
-DATA_VERSION="data-0715-single"
+DATA_VERSION="data-0715"
 DEVICES="1"
 # PRETRAIN_WEIGHTS_PATH='configs/solov2/potato_sorter/data-0602/train/solov2_r50_fpn_3x_sorter_lr0005_bs16_1120_aughsv_flipud/best_model'
-PRETRAIN_WEIGHTS_PATH='configs/solov2/potato_sorter/data-0715-single/train/solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls/best_model'
-CONFIG_NAME="solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls_pretrain"
+# PRETRAIN_WEIGHTS_PATH='configs/solov2/potato_sorter/data-0715-single/train/solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls/best_model'
+PRETRAIN_WEIGHTS_PATH=''
+CONFIG_NAME="solov2_r50_fpn_3x_sorter_lr0005_bs16_960_pretrain"
 
 CONFIG_ROOT="configs/solov2/potato_sorter"
 CONFIG_FILE="${CONFIG_ROOT}/${CONFIG_NAME}.yml"
@@ -19,46 +20,46 @@ echo ${WEIGHTS}
 
 
 # 模型训练(GPU单卡训练/GPU多卡训练)
-if [ ${#DEVICES} -gt 2 ]
-then
-    echo "GPU多卡训练"
-    export CUDA_VISIBLE_DEVICES=${DEVICES}
-    if [ $PRETRAIN_WEIGHTS_PATH ]
-    then 
-        python -m paddle.distributed.launch --gpus ${DEVICES} tools/train.py \
-        -c ${CONFIG_FILE} \
-        -o save_dir=${TRAIN_OUTPUT} pretrain_weights=${PRETRAIN_WEIGHTS_PATH} \
-        --eval \
-        --use_vdl=true \
-        --vdl_log_dir=${VDL_LOG_DIR}
-    else
-        python -m paddle.distributed.launch --gpus ${DEVICES} tools/train.py \
-        -c ${CONFIG_FILE} \
-        -o save_dir=${TRAIN_OUTPUT} \
-        --eval \
-        --use_vdl=true \
-        --vdl_log_dir=${VDL_LOG_DIR} 
-    fi
-else
-    echo "GPU单卡训练"
-    export CUDA_VISIBLE_DEVICES=${DEVICES} #windows和Mac下不需要执行该命令
-    if [ $PRETRAIN_WEIGHTS_PATH ]
-    then
-        python tools/train.py \
-        -c ${CONFIG_FILE} \
-        -o save_dir=${TRAIN_OUTPUT} pretrain_weights=${PRETRAIN_WEIGHTS_PATH} \
-        --eval \
-        --use_vdl=true \
-        --vdl_log_dir=${VDL_LOG_DIR}
-    else
-        python tools/train.py \
-        -c ${CONFIG_FILE} \
-        -o save_dir=${TRAIN_OUTPUT} \
-        --eval \
-        --use_vdl=true \
-        --vdl_log_dir=${VDL_LOG_DIR}
-    fi
-fi
+# if [ ${#DEVICES} -gt 2 ]
+# then
+#     echo "GPU多卡训练"
+#     export CUDA_VISIBLE_DEVICES=${DEVICES}
+#     if [ $PRETRAIN_WEIGHTS_PATH ]
+#     then 
+#         python -m paddle.distributed.launch --gpus ${DEVICES} tools/train.py \
+#         -c ${CONFIG_FILE} \
+#         -o save_dir=${TRAIN_OUTPUT} pretrain_weights=${PRETRAIN_WEIGHTS_PATH} \
+#         --eval \
+#         --use_vdl=true \
+#         --vdl_log_dir=${VDL_LOG_DIR}
+#     else
+#         python -m paddle.distributed.launch --gpus ${DEVICES} tools/train.py \
+#         -c ${CONFIG_FILE} \
+#         -o save_dir=${TRAIN_OUTPUT} \
+#         --eval \
+#         --use_vdl=true \
+#         --vdl_log_dir=${VDL_LOG_DIR} 
+#     fi
+# else
+#     echo "GPU单卡训练"
+#     export CUDA_VISIBLE_DEVICES=${DEVICES} #windows和Mac下不需要执行该命令
+#     if [ $PRETRAIN_WEIGHTS_PATH ]
+#     then
+#         python tools/train.py \
+#         -c ${CONFIG_FILE} \
+#         -o save_dir=${TRAIN_OUTPUT} pretrain_weights=${PRETRAIN_WEIGHTS_PATH} \
+#         --eval \
+#         --use_vdl=true \
+#         --vdl_log_dir=${VDL_LOG_DIR}
+#     else
+#         python tools/train.py \
+#         -c ${CONFIG_FILE} \
+#         -o save_dir=${TRAIN_OUTPUT} \
+#         --eval \
+#         --use_vdl=true \
+#         --vdl_log_dir=${VDL_LOG_DIR}
+#     fi
+# fi
 
 # 模型评估
 export CUDA_VISIBLE_DEVICES=${DEVICES:0:1} #windows和Mac下不需要执行该命令

@@ -1,8 +1,8 @@
 import fiftyone as fo
 from sklearn import datasets
 
-data_name = "BtmCamera"
-data_version = "0715"
+data_name = "wheel_geer"
+data_version = ""
 dataset_name = data_name + "-" + data_version
 
 dataset_path_prefix = "/home/lifei/PaddleDetection/dataset/" + data_name + "/"
@@ -11,7 +11,7 @@ train_data_path = dataset_path_prefix + "train"
 val_data_path = dataset_path_prefix + "val"
 # The path to the COCO labels JSON file
 train_labels_path = dataset_path_prefix + "annotations/instance_train.json"
-val_labels_path = dataset_path_prefix + "annotations/instance_val.json"
+# val_labels_path = dataset_path_prefix + "annotations/instance_val.json"
 # Import the dataset
 
 if dataset_name in fo.list_datasets():
@@ -29,18 +29,17 @@ else:
         name=dataset_name
     )
 
-    dataset_val = fo.Dataset.from_dir(
-        dataset_type=fo.types.COCODetectionDataset,
-        data_path=val_data_path,
-        labels_path=val_labels_path,
-        tags="val",
-        label_types=["detections", "segmentations"],
-        name=dataset_name+"_val"
-    )
+    # dataset_val = fo.Dataset.from_dir(
+    #     dataset_type=fo.types.COCODetectionDataset,
+    #     data_path=val_data_path,
+    #     tags="val",
+    #     label_types=["detections", "segmentations"],
+    #     name=dataset_name+"_val"
+    # )
 
-    # 合并数据集
-    dataset.merge_samples(dataset_val)
-    dataset.persistent = True
+    # # 合并数据集
+    # dataset.merge_samples(dataset_val)
+    # dataset.persistent = True
 
 # Print the first few samples in the dataset
 print(dataset.head())

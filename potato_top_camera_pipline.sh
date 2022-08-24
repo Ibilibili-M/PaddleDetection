@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 DATA_VERSION="data-0715"
-DEVICES="2"
+DEVICES="0"
 # PRETRAIN_WEIGHTS_PATH='configs/solov2/potato_sorter/data-0602/train/solov2_r50_fpn_3x_sorter_lr0005_bs16_1120_aughsv_flipud/best_model'
 PRETRAIN_WEIGHTS_PATH=''
-CONFIG_NAME="solov2_r50_enhance_top_camera_bs2"
+CONFIG_NAME="solov2_r50_enhance_top_camera_lr0005"
 
 CONFIG_ROOT="configs/solov2/top_camera"
 CONFIG_FILE="${CONFIG_ROOT}/${CONFIG_NAME}.yml"

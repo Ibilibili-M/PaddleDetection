@@ -3,9 +3,9 @@ set -e
 
 # 模型导出
 python tools/export_model.py \
--c configs/solov2/potato_sorter/solov2_r50_fpn_3x_sorter_lr0005_bs16_960.yml \
+-c configs/solov2/potato_sorter/solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls_pretrain.yml \
 --output_dir=./inference_model \
--o weights=output/solov2_r50_fpn_3x_sorter_lr0005_bs16_960/best_model
+-o weights=configs/solov2/potato_sorter/data-0715-single/train/solov2_r50_fpn_3x_sorter_lr0005_bs16_960_single_cls_pretrain/best_model
 
 
 # # 导出YOLOv3模型
